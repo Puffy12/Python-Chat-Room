@@ -24,6 +24,7 @@ def client_commands(client_socket, address):
             #List of commands that the server accepts
             if command[0] == "JOIN":
                 client_join(client_socket, command[1])
+                print("JOIN")
             elif command[0] == "LIST":
                 #handle list command
                 print("LIST")
@@ -73,7 +74,7 @@ def client_quit(client_socket):
 
 
 def main():
-
+    #This handles the clients args
     if len(sys.argv) != 2:
         print("Usage: python3 server.py <svr_port>")
         return
@@ -89,7 +90,7 @@ def main():
     # Accept incoming client connections
     while True:
         client_socket, addr = server_socket.accept()
-        client_thread = threading.Thread(target=client_commands, args=(client_socket, addr))
+        client_thread = threading.Thread(target=client_commands, args=(client_socket, addr))  #creates a threat for the client process
         client_thread.start()
 
 
