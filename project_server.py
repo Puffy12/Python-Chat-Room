@@ -15,13 +15,13 @@ def client_commands(client_socket, address):
     while True:
         try:
             # Receive data from client
-            data = client_socket.recv(1024).decode()
 
+            data = client_socket.recv(1024).decode()
             if not data:
                 break  # If no data received, close connection
 
             command = data.split()
-            #List of commands that the server accepts
+            #List of commands that the server  accepts
             if command[0] == "JOIN":
                 client_join(client_socket, command[1])
                 print("JOIN")
@@ -51,6 +51,7 @@ def client_commands(client_socket, address):
 
 def client_join(client_socket, username):
     Temp = ""
+    global clients
     # When a user joins the server.
     if len(clients) >= MAX_CLIENTS:
         Temp = "Too Many Users".encode()
