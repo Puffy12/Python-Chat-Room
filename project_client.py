@@ -1,48 +1,54 @@
 import socket
 import sys
+import threading
 
-def send_command(server_socket, command):
-    try:
-        server_socket.send(command.encode())
-        response = server_socket.recv(1024).decode()
-        print(response)
-    except Exception as e:
-        print(f"Error sending command: {e}")
+def receive_data(client_socket):
+    #Thread function to continuously receive data from the server.
+    while True:
+        try:
+            data = client_socket.recv(1024).decode()
+            if not data:
+                break
+            print(data)
+        except Exception as e:
+            print(f"Error receiving data: {e}")
+            break
 
 def main():
-        #This handles the clients args
-    if len(sys.argv) != 2:
-        print("Usage: python3 server.py <svr_port>")
+    if len(sys.argv) != 4:
+        print("Usage: python3 client.py <server_hostname> <server_port> <username>")
         return
-    
-    server_host = "localhost"  # Change to your server's hostname or IP address
-    server_port = int(sys.argv[1])
-    username = input("Enter your username: ")
-    
+
+    server_hostname = sys.argv[1]
+    server_port = int(sys.argv[2])
+    username = sys.argv[3]
+
     try:
-        server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        server_socket.connect((server_host, server_port))
-        print("Connected to server.")
-        
-        # Send JOIN command
-        join_command = f"JOIN {username}"
-        send_command(server_socket, join_command)
+        client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        client_socket.connect((server_hostname, server_port))
+        print("Connected to server")
 
+        # Send JOIN request with username
+        join_message = f"JOIN {username}"
+        client_socket.sendall(join_message.encode())
+
+        # Start a thread to continuously receive data from the server
+        receive_thread = threading.Thread(target=receive_data, args=(client_socket,))
+        receive_thread.start()
+
+        # Handle user input for commands
         while True:
-            print("[Commands include LIST, MESG, BCST, QUIT]")
-            command = input("Enter command: ")
-
-            if command == "QUIT":
-                send_command(server_socket, command)
+            command = input("Enter command: ").strip()
+            if command.upper() == "QUIT":
+                client_socket.sendall("QUIT".encode())
                 break
+            else:
+                client_socket.sendall(command.encode())
 
-            send_command(server_socket, command)
-
-        server_socket.close()
-        print("Connection closed.")
-    
     except Exception as e:
         print(f"Error: {e}")
+    finally:
+        client_socket.close()
 
 if __name__ == "__main__":
     main()
