@@ -38,7 +38,7 @@ def main():
 
         # Handle user input for commands
         while True:
-            command = input("Enter command: ").strip()
+            command = input("Enter command: ").strip() #Incase there is a space
             if command.upper() == "QUIT":
                 client_socket.sendall("QUIT".encode())
                 break

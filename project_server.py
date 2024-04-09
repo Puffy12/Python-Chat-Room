@@ -36,14 +36,25 @@ def handle_client(client_socket):
                 break
 
             command_parts = data.split(" ", 1)
-            command = command_parts[0]
+            command = command_parts[0].upper()
+            #This is where you add commands 
+            print("Command recieved -> " + command)
             if command == "JOIN":
                 client_join(client_socket, command_parts[1])
+            elif command == "LIST":
+                #handle list EX: command client_list(client_socket)
+                print("LIST")
+            elif command == "MESG":
+                #handle message EX: client_mesg(client_socket, command_parts[1])
+                print("MESG")
+            elif command == "BCST":
+                #handle bcst command EX: client_bcst(client_socket, command_parts[1])
+                print("BCST")
             elif command == "QUIT":
                 client_quit(client_socket)
                 break
             else:
-                client_socket.sendall("Unknown Message\n".encode())
+                client_socket.sendall("Unknown Message\n Press Enter to retry command\n Enter command: ".encode())
         except Exception as e:
             print(f"Error: {e}")
             break
