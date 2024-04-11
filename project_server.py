@@ -10,20 +10,22 @@ def client_join(client_socket, username):
     #JOIN command.
     if len(registered_clients) >= MAX_CLIENTS:
         print("Too many users")
-        client_socket.sendall("Too Many Users\n".encode())
+        client_socket.sendall("Too Many Users\n Press Enter to retry command\n Enter command: ".encode())
     else:
         if client_socket not in registered_clients:
             registered_clients[client_socket] = username
             print(f"{username} joined")
         else:
-            client_socket.sendall("Already registered\n".encode())
+            client_socket.sendall("Already registered\n Press Enter to retry command\n Enter command: ".encode())
 
 
 def client_quit(client_socket):
     #Handle QUIT command.
     if client_socket in registered_clients:
+        
         print(f"{registered_clients[client_socket]} disconnected")
         del registered_clients[client_socket]
+        
     client_socket.close()
 
 
