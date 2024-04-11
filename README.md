@@ -36,16 +36,16 @@ The server will then start listening for incoming client connections on the spec
 
 ### Client
 
-To start the client, run the `project_client.py` script with the server hostname, server port, and your desired username as command-line arguments:
+To start the client, run the `project_client.py` script with the server hostname, server port, and your desired username as it asks you:
 
 ```
-python3 project_client.py <server_hostname> <server_port> <username>
+python3 project_client.py <server_hostname> <server_port> 
 ```
 
 For example:
 
 ```
-python3 project_client.py localhost 1234 Alice
+python3 project_client.py localhost 1234 
 ```
 
 Replace `<server_hostname>` with the hostname of the server (e.g., `localhost` if running locally) and `<server_port>` with the port number on which the server is listening.
