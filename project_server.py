@@ -27,6 +27,13 @@ def client_quit(client_socket):
         del registered_clients[client_socket]
         
     client_socket.close()
+    
+def client_list(client_socket):
+    if client_socket in registered_clients:
+        #Joins all the registered_clients values into one string with a space
+        clients_list = "\n".join(registered_clients.values()) 
+        #Sends the list 
+        client_socket.sendall(f"{clients_list}\n".encode())
 
 
 def handle_client(client_socket):
@@ -45,6 +52,7 @@ def handle_client(client_socket):
                 client_join(client_socket, command_parts[1])
             elif command == "LIST":
                 #handle list EX: command client_list(client_socket)
+                client_list(client_socket)
                 print("LIST")
             elif command == "MESG":
                 #handle message EX: client_mesg(client_socket, command_parts[1])
