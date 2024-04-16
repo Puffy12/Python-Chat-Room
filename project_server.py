@@ -34,6 +34,17 @@ def client_list(client_socket):
         clients_list = "\n".join(registered_clients.values()) 
         #Sends the list 
         client_socket.sendall(f"{clients_list}\n".encode())
+        
+def client_bcst(client_socket, message):
+    if client_socket in registered_clients:
+        username = registered_clients[client_socket] #Gets Sender username
+        for socket, _ in registered_clients.items(): #loops though all the values in the dict
+            if socket != client_socket: #making sure the username isnt the sender 
+                try:
+                    socket.sendall(f"From {username}: {message}\n".encode()) #broadcasts the message to them
+                except Exception as e:
+                    print(f"Error sending broadcast message: {e}")
+
 
 
 def handle_client(client_socket):
@@ -59,6 +70,7 @@ def handle_client(client_socket):
                 print("MESG")
             elif command == "BCST":
                 #handle bcst command EX: client_bcst(client_socket, command_parts[1])
+                client_bcst(client_socket, command_parts[1])
                 print("BCST")
             elif command == "QUIT":
                 client_quit(client_socket)
