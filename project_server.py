@@ -46,7 +46,6 @@ def client_bcst(client_socket, message):
                     print(f"Error sending broadcast message: {e}")
 
 
-
 def handle_client(client_socket):
     #Handle each client connection.
     while True:
