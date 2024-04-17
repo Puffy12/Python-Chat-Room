@@ -6,17 +6,18 @@ MAX_CLIENTS = 10
 registered_clients = {}  # {client_socket: username}
 
 
-def client_join(client_socket, username):
-    #JOIN command.
+def client_join(client_socket, username, password):
+    # JOIN command.
     if len(registered_clients) >= MAX_CLIENTS:
         print("Too many users")
         client_socket.sendall("Too Many Users\n Press Enter to retry command\n Enter command: ".encode())
     else:
-        if client_socket not in registered_clients:
-            registered_clients[client_socket] = username
+        if client_socket not in registered_clients and username not in registered_clients.values():
+            registered_clients[client_socket] = (username, password)
             print(f"{username} joined")
         else:
-            client_socket.sendall("Already registered\n Press Enter to retry command\n Enter command: ".encode())
+            client_socket.sendall("Username already registered or already logged in\n Press Enter to retry command\n Enter command: ".encode())
+
 
 
 def client_quit(client_socket):
@@ -82,6 +83,8 @@ def handle_client(client_socket):
             break
 
 
+import ssl
+
 def main():
     if len(sys.argv) != 2:
         print("Usage: python3 server.py <svr_port>")
@@ -93,12 +96,16 @@ def main():
     server_socket.listen(5)
     print(f"Server is listening on port {port}")
 
+    # Wrap the server socket with SSL
+    context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+    context.load_cert_chain(certfile="server.crt", keyfile="server.key")
+    ssl_server_socket = context.wrap_socket(server_socket, server_side=True)
+
     while True:
-        client_socket, client_address = server_socket.accept()
+        client_socket, client_address = ssl_server_socket.accept()
         print(f"Accepted connection from {client_address}")
         client_thread = threading.Thread(target=handle_client, args=(client_socket,))
         client_thread.start()
-
 
 if __name__ == "__main__":
     main()
