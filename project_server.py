@@ -35,6 +35,7 @@ def client_list(client_socket):
         #Sends the list 
         client_socket.sendall(f"{clients_list}\n".encode())
 
+
 def handle_client(client_socket):
     #Handle each client connection.
     while True:
