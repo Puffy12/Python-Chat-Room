@@ -35,6 +35,29 @@ def client_list(client_socket):
         #Sends the list 
         client_socket.sendall(f"{clients_list}\n".encode())
 
+def client_bcst(client_socket, message):
+    if client_socket in registered_clients:
+        username = registered_clients[client_socket] #Gets Sender username
+        for socket, _ in registered_clients.items(): #loops though all the values in the dict
+            if socket != client_socket: #making sure the username isnt the sender 
+                try:
+                    socket.sendall(f"From {username}: {message}\n".encode()) #broadcasts the message to them
+                except Exception as e:
+                    print(f"Error sending broadcast message: {e}")
+
+def client_mesg(client_socket, reciever_socket , message):
+    """
+    Handles the MESG command by sending a message from one client to another.
+
+    Args:
+        client_socket (socket): The socket of the client sending the message.
+        receiver_socket (socket): The socket of the client receiving the message.
+        message (str): The message to be sent.
+
+    Returns:
+        None
+    """
+    print("message command:", client_socket, " : ", reciever_socket, " : ", message)
 
 def handle_client(client_socket):
     #Handle each client connection.
@@ -55,10 +78,18 @@ def handle_client(client_socket):
                 client_list(client_socket)
                 print("LIST")
             elif command == "MESG":
-                #handle message EX: client_mesg(client_socket, command_parts[1])
+                #handle message EX: client_mesg(client_socket, command_parts[1], command_parts[2])
+                if len(command_parts) != 3:
+                    client_socket.sendall("Invalid MESG command. Usage: MESG <receiver_username> <message>\n Enter command: ".encode())
+                else:
+                    client_mesg(client_socket, command_parts[1], command_parts[2])
                 print("MESG")
             elif command == "BCST":
                 #handle bcst command EX: client_bcst(client_socket, command_parts[1])
+                if len(command_parts) != 2:
+                    client_socket.sendall("Invalid BCST command. Usage: BCST <message>\n Enter command: ".encode())
+                else:
+                    client_bcst(client_socket, " ".join(command_parts[1:]))
                 print("BCST")
             elif command == "QUIT":
                 client_quit(client_socket)
