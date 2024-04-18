@@ -18,6 +18,7 @@ def client_join(client_socket, username):
         else:
             client_socket.sendall("Already registered\n Press Enter to retry command\n Enter command: ".encode())
 
+
 def client_quit(client_socket):
     #Handle QUIT command.
     if client_socket in registered_clients:
