@@ -3,7 +3,7 @@ import threading
 import sys
 
 MAX_CLIENTS = 10
-registered_clients = {}  # {client_socket: username}
+registered_clients = {}  # {client_socket: username} ssh mmehrdadi@ecs-coding1.csus.edu
 
 
 def client_join(client_socket, username):
@@ -41,9 +41,9 @@ def client_bcst(client_socket, message):
         for socket, _ in registered_clients.items(): #loops though all the values in the dict
             if socket != client_socket: #making sure the username isnt the sender 
                 try:
-                    socket.sendall(f"From {username}: {message}\n".encode()) #broadcasts the message to them
+                    socket.sendall(f"From {username}: {message}\nEnter command: ".encode()) #broadcasts the message to them
                 except Exception as e:
-                    print(f"Error sending broadcast message: {e}")
+                    print(f"Error sending broadcast message: {e}\nEnter command: ")
 
 def client_mesg(client_socket, reciever_socket , message):
     """
@@ -57,7 +57,7 @@ def client_mesg(client_socket, reciever_socket , message):
     Returns:
         None
     """
-    print("message command:", client_socket, " : ", reciever_socket, " : ", message)
+    print("message command:", client_socket, " : ", reciever_socket, " : ", message,"\nEnter command: ")
 
 def handle_client(client_socket):
     #Handle each client connection.
@@ -76,26 +76,26 @@ def handle_client(client_socket):
             elif command == "LIST":
                 #handle list EX: command client_list(client_socket)
                 client_list(client_socket)
-                print("LIST")
+                #print("LIST")
             elif command == "MESG":
                 #handle message EX: client_mesg(client_socket, command_parts[1], command_parts[2])
                 if len(command_parts) != 3:
-                    client_socket.sendall("Invalid MESG command. Usage: MESG <receiver_username> <message>\n Enter command: ".encode())
+                    client_socket.sendall("Invalid MESG command. Usage: MESG <receiver_username> <message>\nEnter command: ".encode())
                 else:
                     client_mesg(client_socket, command_parts[1], command_parts[2])
-                print("MESG")
+                #print("MESG")
             elif command == "BCST":
                 #handle bcst command EX: client_bcst(client_socket, command_parts[1])
                 if len(command_parts) != 2:
-                    client_socket.sendall("Invalid BCST command. Usage: BCST <message>\n Enter command: ".encode())
+                    client_socket.sendall("Invalid BCST command. Usage: BCST <message>\nEnter command: ".encode())
                 else:
                     client_bcst(client_socket, " ".join(command_parts[1:]))
-                print("BCST")
+                #print("BCST")
             elif command == "QUIT":
                 client_quit(client_socket)
                 break
             else:
-                client_socket.sendall("Unknown Message\n Press Enter to retry command\n Enter command: ".encode())
+                client_socket.sendall("Unknown Message\n Press Enter to retry command\nEnter command: ".encode())
         except Exception as e:
             print(f"Error: {e}")
             break
@@ -105,6 +105,7 @@ def main():
     if len(sys.argv) != 2:
         print("Usage: python3 server.py <svr_port>")
         return
+
 
     port = int(sys.argv[1])
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
