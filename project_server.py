@@ -3,7 +3,7 @@ import threading
 import sys
 
 MAX_CLIENTS = 10
-registered_clients = {}  # {client_socket: username} ssh mmehrdadi@ecs-coding1.csus.edu
+registered_clients = {}  # {client_socket: username} Test Env:ssh mmehrdadi@ecs-coding1.csus.edu
 
 
 def client_join(client_socket, username):
@@ -24,7 +24,7 @@ def client_quit(client_socket):
     if client_socket in registered_clients:
         
         print(f"{registered_clients[client_socket]} disconnected")
-        del registered_clients[client_socket]
+        del registered_clients[client_socket] #gets rid of user from dic
         
     client_socket.close()
     
@@ -101,6 +101,7 @@ def handle_client(client_socket):
                     client_bcst(client_socket, " ".join(command_parts[1:]))
                 #print("BCST")
             elif command == "QUIT":
+                #handle quit command 
                 client_quit(client_socket)
                 break
             else:
@@ -111,22 +112,28 @@ def handle_client(client_socket):
 
 
 def main():
-    if len(sys.argv) != 2:
+    if len(sys.argv) != 2: 
         print("Usage: python3 server.py <svr_port>")
         return
 
-
+    # Extract port number
     port = int(sys.argv[1])
+    # Create TCP socket and Bind the socket
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_socket.bind(("", port))
     server_socket.listen(5)
+    
     print(f"Server is listening on port {port}")
 
     while True:
+        # Accept incoming client connection
         client_socket, client_address = server_socket.accept()
         print(f"Accepted connection from {client_address}")
+        
+        # Create a new thread to handle the client connection
         client_thread = threading.Thread(target=handle_client, args=(client_socket,))
         client_thread.start()
+
 
 
 if __name__ == "__main__":
