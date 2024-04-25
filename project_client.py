@@ -16,12 +16,12 @@ def receive_data(client_socket):
 
 def main():
     if len(sys.argv) != 3:
-        print("Usage: python3 client.py <server_hostname> <server_port> ")
+        print("Usage: python3 client.py <server_port> ")
         return
 
     name = input("Type your username:")
-    server_hostname = sys.argv[1]
-    server_port = int(sys.argv[2])
+    server_hostname = "localhost"
+    server_port = int(sys.argv[1])
     username = name.strip()
 
     try:

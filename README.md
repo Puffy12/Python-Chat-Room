@@ -1,64 +1,103 @@
-# Chat Application
+# Devlopers:
+    -Michael Mehrdadi (ID: 303314557)
+        -Main Deveolper, Tester, Report Writer
+        -Created Server and Client component 
+    -Brian Hawj (ID: ) 
+        -Main Tester
 
-This is a simple chat application implemented in Python using TCP sockets. It consists of a client program (`client.py`) and a server program (`server.py`) that allow users to communicate with each other in a chat room.
+# Simple Chat Server and Client
+
+This repository contains Python scripts for a simple chat server and client implementation using sockets. The server supports basic chat functionalities such as joining, listing clients, sending messages to individual clients, broadcasting messages to all clients, and quitting the chat. The client allows users to connect to the server, join the chat with a username, send messages, and quit the chat.
 
 ## Installation
 
-1. Clone this repository to your local machine:
+1. Clone the repository:
+   ```
+   git clone https://github.com/Puffy12/138-Socket-Project.git
+   ```
 
-```
-git clone https://github.com/Puffy12/138-Socket-Project
-```
-
-2. Navigate to the cloned directory:
-
-```
-cd 138-Socket-Project
-```
+2. Navigate to the directory:
+   ```
+   cd 138-Socket-Project
+   ```
 
 ## Usage
 
 ### Server
 
-To start the server, run the `project_server.py` script with the desired port number as the command-line argument:
-
-```
-python3 project_server.py <svr_port>
-```
-
-For example:
-
-```
-python3 project_server.py 1234
-```
-
-The server will then start listening for incoming client connections on the specified port.
+1. **Running the Server:**
+   - Execute the `server.py` script with Python 3 and provide the server port as a command-line argument.
+   ```
+   python3 server.py <svr_port>
+   ```
 
 ### Client
 
-To start the client, run the `project_client.py` script with the server hostname, server port, and your desired username as it asks you:
+1. **Running the Client:**
+   - Execute the `client.py` script with Python 3, providing the server port as the first command-line argument.
+   ```
+   python3 client.py <server_port>
+   ```
 
+2. **Client Interaction:**
+   - Upon running the client, provide a username when prompted.
+   - Enter commands to interact with the chat:
+     - To send a message, simply type the message and press Enter.
+     - To quit the chat, type `QUIT` and press Enter.
+
+3. **Comands:**
+   - `JOIN <username>`: Allows a client to join the chat with a specified username.
+   - `LIST`: Lists all currently registered clients.
+   - `MESG <receiver_username> <message>`: Sends a message to a specific client.
+   - `BCST <message>`: Broadcasts a message to all clients.
+   - `QUIT`: Disconnects the client from the server and quits the chat. 
+
+## Usage Example
+
+### Server
+
+```bash
+python3 server.py 12345
 ```
-python3 project_client.py <server_hostname> <server_port> 
+
+### Client
+
+```bash
+python3 client.py 12345
 ```
 
-For example:
+1. **Client Interaction:**
+   ```
+   Type your username: Alice
+   Connected to server
+   Enter command: JOIN Alice
+   User Alice joined
+   Enter command: LIST
+   Client List:
+   1. Alice
+   Enter command: BCST Hello everyone!
+   From Alice: Hello everyone!
+   Enter command: MESG Bob Hello Bob!
+   From Alice: Hello Bob!
+   Enter command: QUIT
+   Alice disconnected
+   ```
 
-```
-python3 project_client.py localhost 1234 
-```
+2. **Server Output:**
+   ```
+   Server is listening on port 12345
+   Accepted connection from ('127.0.0.1', 54564)
+   Command received -> JOIN
+   Alice joined
+   Command received -> LIST
+   Command received -> BCST
+   Command received -> MESG
+   Command received -> QUIT
+   Alice disconnected
+   ```
 
-Replace `<server_hostname>` with the hostname of the server (e.g., `localhost` if running locally) and `<server_port>` with the port number on which the server is listening.
+## Requirements
 
-Once the client is running, you can enter commands to join the chat room, send messages, list connected users, and quit.
-
-## Commands
-
-The following commands are supported by the client:
-
-- `JOIN username`: Join the chat room with the specified username.
-- `LIST`: List all users currently connected to the chat room.
-- `MESG username message`: Send a message to a specific user.
-- `BCST message`: Broadcast a message to all users in the chat room.
-- `QUIT`: Disconnect from the chat room and exit the client.
+- Python 3.x
+- Standard Python libraries (no external dependencies)
 

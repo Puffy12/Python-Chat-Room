@@ -7,8 +7,8 @@ registered_clients = {}  # {client_socket: username} Test Env:ssh mmehrdadi@ecs-
 
 
 def client_join(client_socket, username):
-    #JOIN command.
-    if len(registered_clients) >= MAX_CLIENTS:
+    #JOIN command. and checks for max clients
+    if len(registered_clients) >= MAX_CLIENTS: 
         print("Too many users")
         client_socket.sendall("Too Many Users\n Press Enter to retry command\nPress Enter to cont...".encode())
     else:
@@ -29,6 +29,7 @@ def client_quit(client_socket):
     client_socket.close()
     
 def client_list(client_socket):
+    #Makes sure the client is registered 
     if client_socket in registered_clients:
         #Joins all the registered_clients values into one string with a space
         if client_socket in registered_clients:
@@ -37,6 +38,7 @@ def client_list(client_socket):
             #Sends the list 
 
 def client_bcst(client_socket, message):
+    #Makes sure the client is registered 
     if client_socket in registered_clients:
         username = registered_clients[client_socket] #Gets Sender username
         for socket, _ in registered_clients.items(): #loops though all the values in the dict
@@ -81,6 +83,8 @@ def handle_client(client_socket):
             print("Command recieved -> " + command)
             if command == "JOIN":
                 client_join(client_socket, command_parts[1])
+                client_bcst(client_socket, (registered_clients[client_socket] + " Joined\nPress Enter to cont...") )
+
             elif command == "LIST":
                 #handle list EX: command client_list(client_socket)
                 client_list(client_socket)
