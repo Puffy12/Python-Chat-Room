@@ -96,8 +96,11 @@ python3 client.py 12345
    Alice disconnected
    ```
 
+
+## Example: 
+![alt text](138chat.png)
+
 ## Requirements
 
 - Python 3.x
 - Standard Python libraries (no external dependencies)
-

@@ -116,7 +116,7 @@ def handle_client(client_socket):
 
 
 def main():
-    if len(sys.argv) != 2: 
+    if len(sys.argv) != 2:  #change to 2 on server
         print("Usage: python3 server.py <svr_port>")
         return
 
