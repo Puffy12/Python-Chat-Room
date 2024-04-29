@@ -7,7 +7,7 @@
 
 # Simple Chat Server and Client
 
-This repository contains Python scripts for a simple chat server and client implementation using sockets. The server supports basic chat functionalities such as joining, listing clients, sending messages to individual clients, broadcasting messages to all clients, and quitting the chat. The client allows users to connect to the server, join the chat with a username, send messages, and quit the chat.
+This repository contains Python scripts for a simple chat server and client implementation using sockets. The server supports basic chat functionalities such as joining, listing clients, sending messages to individual clients, broadcasting messages to all clients, and quitting the chat. The client allows users to connect to the server, join the chat with a username, send messages, and quit the chat. 
 
 ## Installation
 
@@ -104,3 +104,8 @@ python3 client.py 12345
 
 - Python 3.x
 - Standard Python libraries (no external dependencies)
+
+## About
+- This program made use of sockets and threads in python
+- Each command and function has comments explaining each section
+- This can be easily scaled with a gui or react native interface
