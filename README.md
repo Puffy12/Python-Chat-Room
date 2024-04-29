@@ -2,8 +2,8 @@
     -Michael Mehrdadi (ID: 303314557)
         -Main Deveolper, Tester, Report Writer
         -Created Server and Client component 
-    -Brian Hawj (ID: ) 
-        -Main Tester
+    -Brian Hawj (ID: 219993957) 
+        -Main Tester, Report Writer
 
 # Simple Chat Server and Client
 
