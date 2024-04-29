@@ -3,12 +3,12 @@ import threading
 import sys
 
 MAX_CLIENTS = 10
-registered_clients = {}  # {client_socket: username} Test Env:ssh mmehrdadi@ecs-coding1.csus.edu
+registered_clients = {}  # Dictionary to store registered clients {client_socket: username}
 
 
 def client_join(client_socket, username):
-    #JOIN command. and checks for max clients
-    if len(registered_clients) >= MAX_CLIENTS: 
+    # Handles JOIN command and checks for maximum clients
+    if len(registered_clients) >= MAX_CLIENTS:
         print("Too many users")
         client_socket.sendall("Too Many Users\n Press Enter to retry command\nPress Enter to cont...".encode())
     else:
@@ -20,39 +20,37 @@ def client_join(client_socket, username):
 
 
 def client_quit(client_socket):
-    #Handle QUIT command.
+    # Handles QUIT command
     if client_socket in registered_clients:
-        
         print(f"{registered_clients[client_socket]} disconnected")
-        del registered_clients[client_socket] #gets rid of user from dic
-        
+        del registered_clients[client_socket]  # Removes user from dictionary
     client_socket.close()
-    
+
+
 def client_list(client_socket):
-    #Makes sure the client is registered 
+    # Makes sure the client is registered and sends the list of clients
     if client_socket in registered_clients:
-        #Joins all the registered_clients values into one string with a space
-        if client_socket in registered_clients:
-            clients_list = "\n".join([f"{i+1}. {username}" for i, username in enumerate(registered_clients.values())])
-            client_socket.sendall(f"\nClient List:\n{clients_list}\nPress Enter to cont...".encode())
-            #Sends the list 
+        clients_list = "\n".join([f"{i+1}. {username}" for i, username in enumerate(registered_clients.values())])
+        client_socket.sendall(f"\nClient List:\n{clients_list}\nPress Enter to cont...".encode())
+
 
 def client_bcst(client_socket, message):
-    #Makes sure the client is registered 
+    # Makes sure the client is registered and broadcasts the message to other clients
     if client_socket in registered_clients:
-        username = registered_clients[client_socket] #Gets Sender username
-        for socket, _ in registered_clients.items(): #loops though all the values in the dict
-            if socket != client_socket: #making sure the username isnt the sender 
+        username = registered_clients[client_socket]
+        for socket, _ in registered_clients.items():
+            if socket != client_socket:
                 try:
-                    socket.sendall(f"From {username}: {message}\nPress Enter to cont...".encode()) #broadcasts the message to them
+                    socket.sendall(f"From {username}: {message}\nPress Enter to cont...".encode())
                 except Exception as e:
                     print(f"Error sending broadcast message: {e}\nPress Enter to cont...")
 
-def client_mesg(client_socket, receiver_username , message):
+
+def client_mesg(client_socket, receiver_username, message):
     """
     Handles the MESG command by sending a message from one client to another.
     """
-    # Find the recipient's IP address based on their username
+    # Find the recipient's socket based on their username
     recipient_socket = None
     for socket, username in registered_clients.items():
         if username == receiver_username:
@@ -69,8 +67,9 @@ def client_mesg(client_socket, receiver_username , message):
     else:
         client_socket.sendall(f"User {receiver_username} not found\nPress Enter to cont...".encode())
 
+
 def handle_client(client_socket):
-    #Handle each client connection.
+    # Handle each client connection
     while True:
         try:
             data = client_socket.recv(1024).decode().strip()
@@ -79,33 +78,25 @@ def handle_client(client_socket):
 
             command_parts = data.split(" ", 1)
             command = command_parts[0].upper()
-            #This is where you add commands 
-            print("Command recieved -> " + command)
+            print("Command received -> " + command)  # Print received command
+
             if command == "JOIN":
                 client_join(client_socket, command_parts[1])
-                client_bcst(client_socket, (registered_clients[client_socket] + " Joined\nPress Enter to cont...") )
-
+                client_bcst(client_socket, (registered_clients[client_socket] + " Joined\nPress Enter to cont..."))
             elif command == "LIST":
-                #handle list EX: command client_list(client_socket)
                 client_list(client_socket)
-                #print("LIST")
             elif command == "MESG":
-                # handle message EX: client_mesg(client_socket, command_parts[1], command_parts[2])
                 command_parts = data.split(" ", 2)
                 if len(command_parts) != 3:
                     client_socket.sendall("Invalid MESG command. Usage: MESG <receiver_username> <message>\nEnter command: ".encode())
                 else:
                     client_mesg(client_socket, command_parts[1], command_parts[2])
-                #print("MESG")
             elif command == "BCST":
-                #handle bcst command EX: client_bcst(client_socket, command_parts[1])
                 if len(command_parts) != 2:
                     client_socket.sendall("Invalid BCST command. Usage: BCST <message>\n Press Enter to cont...".encode())
                 else:
                     client_bcst(client_socket, " ".join(command_parts[1:]))
-                #print("BCST")
             elif command == "QUIT":
-                #handle quit command 
                 client_quit(client_socket)
                 break
             else:
@@ -120,7 +111,7 @@ def main():
         print("Usage: python3 server.py <svr_port>")
         return
 
-    # Extract port number
+    # Extract port number from command-line argument
     port = int(sys.argv[1])
     # Create TCP socket and Bind the socket
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -139,6 +130,5 @@ def main():
         client_thread.start()
 
 
-
 if __name__ == "__main__":
-    main()
+    main()  # Call the main function when the script is executed
